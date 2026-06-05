@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Portafolio de Arte</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       VARIABLES DE COLOR Y FUENTES — cambia aquí para rediseñar
+       ============================================================ */
+    :root {
+      --bg:          #0e0d0b;
+      --bg-card:     #181613;
+      --border:      #2e2b25;
+      --accent:      #c9a96e;
+      --accent-dim:  #8a6e3e;
+      --text:        #e8e0d0;
+      --text-muted:  #7a7060;
+      --font-display: 'Cormorant Garamond', serif;
+      --font-body:    'Jost', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* ============================================================
+       CABECERA
+       ============================================================ */
+    header {
+      padding: 4rem 2rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── NOMBRE DEL ARTISTA ── Cámbialo aquí ↓ */
+    header h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: var(--text);
+    }
+
+    /* ── SUBTÍTULO ── Cámbialo aquí ↓ */
+    header p {
+      margin-top: 0.5rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       NAVEGACIÓN DE SECCIONES
+       ============================================================ */
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.25rem;
+      padding: 1.8rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tab-btn {
+      background: none;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      padding: 0.55rem 1.2rem;
+      cursor: pointer;
+      transition: color 0.25s, border-color 0.25s;
+      border-radius: 2px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-color: var(--accent-dim);
+    }
+
+    /* ============================================================
+       SECCIONES
+       ============================================================ */
+    .section {
+      display: none;
+      padding: 3rem 2rem 5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .section.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .section-line {
+      width: 3rem;
+      height: 1px;
+      background: var(--accent);
+      margin-bottom: 2.5rem;
+    }
+
+    /* ============================================================
+       CUADRÍCULA DE OBRAS
+       ============================================================ */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .obra {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .obra:hover {
+      border-color: var(--accent-dim);
+      transform: translateY(-4px);
+    }
+
+    /* ── Contenedor de imagen ── */
+    .obra-img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: #1a1815;
+    }
+
+    .obra-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .obra:hover .obra-img img {
+      transform: scale(1.04);
+    }
+
+    /* Placeholder cuando no hay imagen */
+    .obra-img.placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: var(--border);
+    }
+
+    .obra-info {
+      padding: 1rem 1.1rem 1.2rem;
+    }
+
+    .obra-titulo {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    .obra-meta {
+      margin-top: 0.3rem;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* ============================================================
+       LIGHTBOX (ventana al hacer clic en una obra)
+       ============================================================ */
+    #lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 9, 8, 0.95);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    #lightbox.open { display: flex; }
+
+    #lightbox img {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border: 1px solid var(--border);
+    }
+
+    #lightbox-info {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+    }
+
+    #lightbox-info h3 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 300;
+      color: var(--text);
+    }
+
+    #lightbox-info p {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    #lightbox-close {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      width: 2.2rem;
+      height: 2.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    #lightbox-close:hover {
+      color: var(--text);
+      border-color: var(--text-muted);
+    }
+
+    /* ============================================================
+       PIE DE PÁGINA
+       ============================================================ */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 600px) {
+      .gallery { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       CABECERA — Cambia el nombre y la descripción
+       ============================================================ -->
+  <header>
+    <h1>Tu Nombre Aquí</h1>
+    <p>Artista · Ciudad · País</p>
+  </header>
+
+  <!-- ============================================================
+       NAVEGACIÓN — Los botones de cada sección
+       ============================================================ -->
+  <nav>
+    <button class="tab-btn active" onclick="mostrarSeccion('dibujo')">Dibujo</button>
+    <button class="tab-btn" onclick="mostrarSeccion('pintura')">Pintura</button>
+    <button class="tab-btn" onclick="mostrarSeccion('escultura')">Escultura</button>
+    <button class="tab-btn" onclick="mostrarSeccion('fotografia')">Fotografía</button>
+    <button class="tab-btn" onclick="mostrarSeccion('digital')">Arte Digital</button>
+  </nav>
+
+
+  <!-- ============================================================
+       SECCIÓN: DIBUJO
+       ============================================================
+       Para añadir una obra nueva, copia un bloque <div class="obra">
+       y cambia:
+         1. El src="..." de <img> con la ruta de tu imagen
+         2. El data-titulo y data-tecnica (para el lightbox)
+         3. El texto de .obra-titulo y .obra-meta
+       ============================================================ -->
+  <div id="seccion-dibujo" class="section active">
+    <h2 class="section-title">Dibujo</h2>
+    <div class="section-line"></div>
+    <div class="gallery">
+
+      <!-- ── OBRA 1 ── -->
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Dibujo 1"
+           data-tecnica="Técnica · Año">
+        <div class="obra-img">
+          <img src="imagenes/dibujo-1.jpg" alt="Dibujo 1">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Dibujo 1</div>
+          <div class="obra-meta">Técnica · Año</div>
+        </div>
+      </div>
+
+      <!-- ── OBRA 2 ── -->
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Dibujo 2"
+           data-tecnica="Técnica · Año">
+        <div class="obra-img">
+          <img src="imagenes/dibujo-2.jpg" alt="Dibujo 2">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Dibujo 2</div>
+          <div class="obra-meta">Técnica · Año</div>
+        </div>
+      </div>
+
+      <!-- ── OBRA 3 ── -->
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Dibujo 3"
+           data-tecnica="Técnica · Año">
+        <div class="obra-img">
+          <img src="imagenes/dibujo-3.jpg" alt="Dibujo 3">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Dibujo 3</div>
+          <div class="obra-meta">Técnica · Año</div>
+        </div>
+      </div>
+
+      <!-- ── OBRA 4 ── -->
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Dibujo 4"
+           data-tecnica="Técnica · Año">
+        <div class="obra-img">
+          <img src="imagenes/dibujo-4.png" alt="Dibujo 4">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Dibujo 4</div>
+          <div class="obra-meta">Técnica · Año</div>
+        </div>
+      </div>
+
+      <!-- ── OBRA 5 ── -->
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Dibujo 5"
+           data-tecnica="Técnica · Año">
+        <div class="obra-img">
+          <img src="imagenes/dibujo-5.jpg" alt="Dibujo 5">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Dibujo 5</div>
+          <div class="obra-meta">Técnica · Año</div>
+        </div>
+      </div>
+
+      <!-- ── OBRA 6 ── -->
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Dibujo 6"
+           data-tecnica="Técnica · Año">
+        <div class="obra-img">
+          <img src="imagenes/dibujo-6.jpg" alt="Dibujo 6">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Dibujo 6</div>
+          <div class="obra-meta">Técnica · Año</div>
+        </div>
+      </div>
+
+      <!-- ── OBRA 7 ── -->
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Dibujo 7"
+           data-tecnica="Técnica · Año">
+        <div class="obra-img">
+          <img src="imagenes/dibujo-7.jpg" alt="Dibujo 7">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Dibujo 7</div>
+          <div class="obra-meta">Técnica · Año</div>
+        </div>
+      </div>
+
+      <!-- ── OBRA 8 ── -->
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Dibujo 8"
+           data-tecnica="Técnica · Año">
+        <div class="obra-img">
+          <img src="imagenes/dibujo-8.jpg" alt="Dibujo 8">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Dibujo 8</div>
+          <div class="obra-meta">Técnica · Año</div>
+        </div>
+      </div>
+
+      <!-- ── OBRA 9 ── -->
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Dibujo 9"
+           data-tecnica="Técnica · Año">
+        <div class="obra-img">
+          <img src="imagenes/dibujo-9.png" alt="Dibujo 9">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Dibujo 9</div>
+          <div class="obra-meta">Técnica · Año</div>
+        </div>
+      </div>
+
+      <!-- ── OBRA 10 ── -->
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Dibujo 10"
+           data-tecnica="Técnica · Año">
+        <div class="obra-img">
+          <img src="imagenes/dibujo-10.png" alt="Dibujo 10">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Dibujo 10</div>
+          <div class="obra-meta">Técnica · Año</div>
+        </div>
+      </div>
+
+      <!-- ── OBRA 11 ── -->
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Dibujo 11"
+           data-tecnica="Técnica · Año">
+        <div class="obra-img">
+          <img src="imagenes/dibujo-11.jpg" alt="Dibujo 11">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Dibujo 11</div>
+          <div class="obra-meta">Técnica · Año</div>
+        </div>
+      </div>
+
+      <!-- ══ COPIA ESTE BLOQUE PARA AÑADIR MÁS OBRAS EN DIBUJO ══
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Dibujo 12"
+           data-tecnica="Técnica · Año">
+        <div class="obra-img">
+          <img src="imagenes/dibujo-12.jpg" alt="Dibujo 12">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Dibujo 12</div>
+          <div class="obra-meta">Técnica · Año</div>
+        </div>
+      </div>
+      ═══════════════════════════════════════════════════════════ -->
+
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       SECCIÓN: PINTURA
+       ============================================================ -->
+  <div id="seccion-pintura" class="section">
+    <h2 class="section-title">Pintura</h2>
+    <div class="section-line"></div>
+    <div class="gallery">
+
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Mi primera pintura"
+           data-tecnica="Óleo sobre lienzo · 2023">
+        <div class="obra-img">
+          <img src="https://via.placeholder.com/600x450/181613/2e2b25?text=pintura+1" alt="Mi primera pintura">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Mi primera pintura</div>
+          <div class="obra-meta">Óleo sobre lienzo · 2023</div>
+        </div>
+      </div>
+
+      <!-- ══ COPIA ESTE BLOQUE PARA AÑADIR MÁS OBRAS EN PINTURA ══
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Nombre"
+           data-tecnica="Técnica · Año">
+        <div class="obra-img">
+          <img src="imagenes/pintura2.jpg" alt="Nombre">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Nombre</div>
+          <div class="obra-meta">Técnica · Año</div>
+        </div>
+      </div>
+      ═══════════════════════════════════════════════════════════ -->
+
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       SECCIÓN: ESCULTURA
+       ============================================================ -->
+  <div id="seccion-escultura" class="section">
+    <h2 class="section-title">Escultura</h2>
+    <div class="section-line"></div>
+    <div class="gallery">
+
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Forma en reposo"
+           data-tecnica="Arcilla · 2024">
+        <div class="obra-img">
+          <img src="https://via.placeholder.com/600x450/181613/2e2b25?text=escultura+1" alt="Forma en reposo">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Forma en reposo</div>
+          <div class="obra-meta">Arcilla · 2024</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       SECCIÓN: FOTOGRAFÍA
+       ============================================================ -->
+  <div id="seccion-fotografia" class="section">
+    <h2 class="section-title">Fotografía</h2>
+    <div class="section-line"></div>
+    <div class="gallery">
+
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Luz de tarde"
+           data-tecnica="Fotografía digital · 2024">
+        <div class="obra-img">
+          <img src="https://via.placeholder.com/600x450/181613/2e2b25?text=foto+1" alt="Luz de tarde">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Luz de tarde</div>
+          <div class="obra-meta">Fotografía digital · 2024</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       SECCIÓN: ARTE DIGITAL
+       ============================================================ -->
+  <div id="seccion-digital" class="section">
+    <h2 class="section-title">Arte Digital</h2>
+    <div class="section-line"></div>
+    <div class="gallery">
+
+      <div class="obra" onclick="abrirLightbox(this)"
+           data-titulo="Composición 01"
+           data-tecnica="Ilustración digital · 2024">
+        <div class="obra-img">
+          <img src="https://via.placeholder.com/600x450/181613/2e2b25?text=digital+1" alt="Composición 01">
+        </div>
+        <div class="obra-info">
+          <div class="obra-titulo">Composición 01</div>
+          <div class="obra-meta">Ilustración digital · 2024</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       LIGHTBOX — No tocar este bloque
+       ============================================================ -->
+  <div id="lightbox">
+    <button id="lightbox-close" onclick="cerrarLightbox()" aria-label="Cerrar">✕</button>
+    <img id="lightbox-img" src="" alt="">
+    <div id="lightbox-info">
+      <h3 id="lightbox-titulo"></h3>
+      <p id="lightbox-tecnica"></p>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       PIE DE PÁGINA — Cambia el texto
+       ============================================================ -->
+  <footer>
+    <p>© 2024 Tu Nombre · Todos los derechos reservados</p>
+  </footer>
+
+
+  <!-- ============================================================
+       JAVASCRIPT — No es necesario modificar nada aquí
+       ============================================================ -->
+  <script>
+    function mostrarSeccion(id) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('seccion-' + id).classList.add('active');
+      event.currentTarget.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function abrirLightbox(el) {
+      const img = el.querySelector('img');
+      document.getElementById('lightbox-img').src = img.src;
+      document.getElementById('lightbox-img').alt = img.alt;
+      document.getElementById('lightbox-titulo').textContent = el.dataset.titulo;
+      document.getElementById('lightbox-tecnica').textContent = el.dataset.tecnica;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.getElementById('lightbox').addEventListener('click', function(e) {
+      if (e.target === this) cerrarLightbox();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') cerrarLightbox();
+    });
+  </script>
+
+</body>
+</html>
